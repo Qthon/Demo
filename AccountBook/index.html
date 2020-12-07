@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh_cn">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="./public/libs/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="./public/libs/jQuery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="./public/libs/mdui/dist/css/mdui.min.css" />
+    <script src="./public/libs/mdui/dist/js/mdui.min.js"></script>
+    <script src="./public//libs/template-web.js"></script>
+    <script type="text/javascript" src="./public/libs/bootstrap/js/bootstrap.js"></script>
+    <title>Book-index</title>
+    <style>
+        .container .header .btns .left-btn {
+            margin-left: 10px;
+            outline: none;
+        }
+
+        .header {
+            padding: 10px 0;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #888;
+            margin-bottom: 20px;
+        }
+
+        .container .row .panel {
+            box-shadow: 0px 2px 3px 1px rgba(0, 0, 0, 0.1);
+        }
+
+        .container .row .msg {
+            margin-left: 5px;
+            color: #835858;
+            letter-spacing: 0.1em;
+            padding: 5px;
+            background-color: #efefef;
+            border-radius: 3px;
+        }
+
+        .panel-title {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .panel-body {
+            letter-spacing: .1em;
+        }
+
+        .panel-title .icon-sc {
+            margin-left: 15px;
+        }
+
+        .panel-title:hover .icons {
+            cursor: pointer;
+            display: flex;
+        }
+
+        .panel-title .icons {
+            display: none;
+        }
+
+        .list-group .list-group-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .list-group .list-group-item .copy {
+            outline: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Bootstrap面板组件，带有标题的面板 -->
+    <div class="container">
+        <!-- 头部 -->
+        <div class="header">
+            <h3>Account book 📃</h3>
+            <div class="btns">
+                <button type="button" class="btn btn-info left-btn" mdui-dialog="{target: '#example-4'}" id="add">
+                    Add 📥
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <!-- 内容 -->
+            <div class="col-md-7" id="content"></div>
+            <!-- 备注 -->
+            <div class="col-md-5">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">备注</h3>
+                    </div>
+                    <div class="panel-body">
+                        <p>
+                            <strong>项目简述：</strong>该项目是以<mark>Jquery</mark>，<mark>Bootstrap</mark>和<mark>Mdui</mark>为前端框架，<mark>Express</mark>为后端框架，采用<ins>前后端分离的设计模式</ins>而设计的一个记录号码的账号薄...，该项目未用到数据库，采用对Json文件增删改查来完成数据的存储数据。
+                        </p>
+
+                        <p>用时：2020-9-30 至 2020-10-07</p>
+                        <mark>可改进点：</mark>
+                        <ul>
+                            <li>由于Bootstrap和MDui中的提示框组件太过复杂不适合该场景，可考虑封装提示组件</li>
+                            <li>密码显示优化上，可选择只显示前两位，其他可以由‘*’号代替</li>
+                            <li>由于项目数据简单就没有涉及数据库操作，也可考虑将项目优化数据库存储</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 对话框 -->
+    <div class="mdui-dialog" id="example-4">
+        <!-- 对话框标题 -->
+        <div class="mdui-dialog-title">Add Data...</div>
+        <!-- 输入文本框 -->
+        <div class="mdui-dialog-content">
+            <form id="form">
+                <!--Title  -->
+                <div class="mdui-textfield mdui-textfield-floating-label">
+                    <i class="mdui-icon material-icons">&#xe0d8;</i>
+                    <label class="mdui-textfield-label">Title</label>
+                    <input class="mdui-textfield-input" name="title" autocomplete="off"></input>
+                </div>
+                <!-- Username -->
+                <div class="mdui-textfield mdui-textfield-floating-label">
+                    <i class="mdui-icon material-icons">&#xe853;</i>
+                    <label class="mdui-textfield-label">Username</label>
+                    <input class="mdui-textfield-input" name="username" autocomplete="off"></input>
+                </div>
+                <!-- Password -->
+                <div class="mdui-textfield mdui-textfield-floating-label">
+                    <i class="mdui-icon material-icons">lock</i>
+                    <label class="mdui-textfield-label">Password</label>
+                    <input class="mdui-textfield-input" name="password" autocomplete="off"></input>
+                </div>
+            </form>
+        </div>
+        <!-- 确认 取消按钮 -->
+        <div class="mdui-dialog-actions">
+            <button class="mdui-btn mdui-ripple" mdui-dialog-close>取消</button>
+            <button class="mdui-btn mdui-ripple" mdui-dialog-confirm onclick="addData()">确认</button>
+        </div>
+    </div>
+</body>
+<script type="text/html" id="temp">
+{{each data}}
+<div class="panel panel-{{$value.color}}">
+    <!-- 面板标题 -->
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <div>{{$index +1}}、{{$value.title}}</div>
+            <div class="icons">
+                <span class="glyphicon glyphicon-pencil" title="修改" onclick=goTo('./edit.html?id='+'{{$value.id}}')> </span>
+                <span class="glyphicon glyphicon-trash icon-sc" title="删除" onclick=removeData({{$value.id}})></span>
+            </div>
+        </h3>
+    </div>
+    <!-- 面板列表 -->
+    <ul class="list-group">
+        <li class="list-group-item">
+            <div class="info">
+                <strong>👥 UserName：</strong><span class="msg">{{$value.username}}</span>
+            </div>
+            <button type="button" class="btn btn-success left-btn copy" onclick=copyData({{$value.id}},'username')>COPY</button>
+        </li>
+        <li class="list-group-item">
+            <div class="info">
+                <strong>📪 Password：</strong><span class="msg">{{$value.password}}</span>
+            </div>
+            <button type="button" class="btn btn-success left-btn copy" onclick=copyData({{$value.id}},'password')>COPY</button>
+        </li>
+    </ul>
+</div>
+{{/each}}
+</script>
+<script src="./public/js/common.js"></script>
+<script src="./public/js/index.js"></script>
+
+</html>

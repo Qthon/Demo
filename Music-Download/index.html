@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh_cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="./js/jQuery.min.js"></script>
+    <script src="./js/template-web.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <header>
+        <h2>Download Music for free</h2>
+    </header>
+    <main>
+        <div class="search">
+            <input type="text" placeholder="歌曲名称 / 演唱者" id="search-value">
+            <button onclick="getmusicDetail()">搜索</button>
+        </div>
+        <div class="music-list"></div>
+        <div class="hide" id="loading">
+            <img src="./loading.svg" alt="">
+        </div>
+    </main>
+</body>
+<script type="text/html" id="list">
+    <h3>搜索结果({{length}})</h3>
+    {{each}}
+    <ul>
+        <li>
+            <a href="{{$value.url}}" target="_blank">
+                {{$index + 1}}、
+                <span class="red">【{{'专辑 | ' + $value.album}}】</span>
+                {{$value.name}} —— {{$value.singer}}
+                【{{$value.type}}】
+                <small>{{$value.size}}MB</small>
+            </a>
+        </li>
+    </ul>
+    {{/each}}
+</script>
+<script src="./js/index.js"></script>
+
+</html>

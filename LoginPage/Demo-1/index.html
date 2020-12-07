@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang='zh_cn'>
+
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="./style.css">
+    <title>MaskDemo</title>
+</head>
+
+<body>
+    <form class="login-from">
+        <h1>Login</h1>
+        <!-- 用户名 -->
+        <div class="input-txt">
+            <input type="text">
+            <span data-placeholder="Username"></span>
+        </div>
+        <!-- 密码框 -->
+        <div class="input-txt">
+            <input type="password">
+            <span data-placeholder="password"></span>
+        </div>
+        <!-- 按钮 -->
+        <input type="button" class="logbtn" value="Login">
+
+        <div class="bottom-text">
+            Don't have account <a href="#">Sign up</a>
+        </div>
+    </form>
+</body>
+<script src="./jQuery.min.js"></script>
+<script>
+    // 获得焦点时
+    $(".input-txt input").on('focus', function() {
+            $(this).addClass("focus")
+        })
+        // 失去焦点 且内容为空时
+    $(".input-txt input").on('blur', function() {
+        if (!$(this).val()) {
+            $(this).removeClass("focus")
+        }
+    })
+</script>
+
+</html>

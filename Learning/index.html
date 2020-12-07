@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./bootstrap/css/bootstrap.css" />
+    <link rel="stylesheet" href="./css/index.css" />
+    <link rel="shortcut icon" href="Learning.ico" />
+    <script src="./bootstrap/js/jquery-3.5.1.min.js"></script>
+    <script src="./bootstrap/js/bootstrap.min.js"></script>
+    <script src="./js/index.js"></script>
+    <title>Learning...</title>
+</head>
+<!--日志
+        时间            事件             已知bug                    BUG原因                       如何解决
+    2020-05-16      基本完成项目    点击事件多次执行[已解决]    jQ事件委托导致点击事件多次执行      解绑上次点击事件.off()
+    2020-06-04      发现bug        修改框的数值不能判断        输入数值在获取时是字符串格式       获取数值时将字符串格式转换为数字类型 
+-->
+
+<body>
+    <header>
+        <section>
+            <!-- 导航条 -->
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                            data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#">Learning</a>
+                    </div>
+
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <form class="navbar-form navbar-left">
+                            <button type="button" class="btn btn-default" data-toggle="modal"
+                                data-target="#exampleModal">
+                                添加
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </nav>
+        </section>
+    </header>
+    <section>
+        <div class="container">
+            <h4>正在进行&hellip;<span></span></h4>
+            <ul class="list row clearfix"></ul>
+            <h4>已经完成&hellip;</h4>
+            <ol class="listed row clearfix"></ol>
+            <!-- <button disabled>禁止</button> -->
+        </div>
+    </section>
+
+    <!-- 添加-模态框 -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="exampleModalLabel">
+                        添加进度
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form id="myform">
+                        <div class="form-group">
+                            <label for="recipient-name" class="control-label">课程名称</label>
+                            <input type="text" class="form-control target" id="recipient-name" autocomplete="off"
+                                placeholder="ClsaaName" />
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name" class="control-label">网址</label>
+                            <input type="url" class="form-control web_url" id="recipient-name" autocomplete="off"
+                                placeholder="URL" />
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name" class="control-label">目前进度</label>
+                            <input type="number" class="form-control present" id="recipient-name" autocomplete="off"
+                                placeholder="PreSent" />
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name" class="control-label">总进度</label>
+                            <input type="number" class="form-control total" id="recipient-name" autocomplete="off"
+                                placeholder="ToTal" />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="cancel_content">
+                        取消
+                    </button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="get_content">
+                        确定
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 修改-模态框 -->
+    <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="exampleModalLabel">修改</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="recipient-name" class="control-label">目前进度</label>
+                            <input type="number" class="form-control post_record" id="recipient-name"
+                                autocomplete="off" />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        取消
+                    </button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="get_change">
+                        确定
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 删除-模态框 -->
+    <div class="modal fade" id="exampleModal-del" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">注意</h4>
+                </div>
+                <div class="modal-body">
+                    <p>是否删除&hellip;</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        取消
+                    </button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="get_del">
+                        确定
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 已完成-模态框 -->
+    <div class="modal fade" id="exampleModal-success" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">恭喜</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        小菜言：“不积跬步，无以至千里”，年轻人，你还差远了&hellip;
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        尴尬了
+                    </button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="get_success">
+                        冲 冲 冲
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

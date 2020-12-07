@@ -1,0 +1,84 @@
+* {
+    margin: 0;
+    padding: 0;
+    /* box-sizing: border-box; */
+}
+
+li {
+    list-style: none;
+}
+
+/*清除浮动代码*/
+.clearfix::after {
+    content: "";
+    /* clear属性只有在块级元素起作用，所以要转成块级元素 */
+    display: block;
+    /*规定元素左右两侧均不允许浮动元素 */
+    clear: both;
+    /* 只要content的值为空，写不写都可以 */
+    visibility: hidden;
+    height: 0;
+}
+
+/* 进度条 */
+.slide>div {
+    width: 100%;
+    height: 20px;
+    border-radius: 10px;
+    background-color: #dddddd;
+}
+
+/* 实时进度 */
+.slide>div>div {
+    /* width: 50%; */
+    /* display: none; */
+    height: 20px;
+    border-radius: 10px;
+    background-color: steelblue;
+}
+
+.slide .slide_bg {
+    transition: all .5s;
+}
+
+.list li,
+.listed li {
+    text-align: center;
+    height: 120px;
+    padding: 50px 0px;
+    /* border-bottom: 1px solid #cccccc; */
+}
+
+.list .change,
+.listed .change {
+    padding: 45px 0px;
+}
+
+.record span {
+    margin: 0px 5px;
+}
+
+.container h4 {
+    position: relative;
+    font-weight: bold;
+    border-bottom: 3px solid #999999;
+    padding: 10px;
+    user-select: none;
+}
+
+.container h4 span {
+    position: absolute;
+    user-select: none;
+    font-size: 14px;
+    background-color: steelblue;
+    height: 25px;
+    line-height: 25px;
+    width: 155px;
+    text-align: center;
+    font-weight: lighter;
+    color: white;
+    border-radius: 3px;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
