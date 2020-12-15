@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh_cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel转 JSON</title>
+    <script src="./node_modules/jquery/dist/jquery.js"></script>
+    <style>
+        .box-main {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .box-main .base {
+            height: 95vh;
+            background-color: #fafafa;
+            padding: 20px;
+            width: 29.5%;
+            border-radius: 10px;
+            border: 1px #333333 dashed;
+            box-sizing: border-box;
+            overflow: auto;
+        }
+        
+        #jsonObject {
+            box-sizing: border-box;
+            padding: 20px;
+            background-color: #282c34;
+            width: 70%;
+            font-size: 14px;
+            color: #fff;
+            height: 95vh;
+            border-radius: 10px;
+            overflow: auto;
+            letter-spacing: .2em;
+        }
+        
+        input[type="file"] {
+            outline: none;
+            cursor: pointer;
+        }
+        
+        .box-result {
+            position: relative;
+        }
+        
+        .box-result button {
+            position: absolute;
+            cursor: pointer;
+            color: #fff;
+            right: 20px;
+            letter-spacing: normal;
+            top: 10px;
+            background-color: #222222;
+            padding: 8px 15px;
+            border: none;
+            outline: none;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box-main">
+        <div class="base">
+            <h3 style="text-align: center;color: #282c34;">Excel转Json用前须知</h3>
+            <p>为了读取的正确性，建议Excel表格数据格式为以下形式👇👇👇</p>
+            <img src="./images/demo1.png" alt="Excel表格格式规范" style="width: 80%;">
+            <!-- 选择excel文件的input文件表单,此表单限制选择excel文件 -->
+            <h3 style="text-align: center;color: #282c34;">开始使用</h3>
+            <p>上传需要转换的Excel表格，选择并回车，右侧就是我们想要的结果 👉</p>
+            <input type="file" id="fileUploader" name="fileUploader" accept=".xls, .xlsx" onchange="fileClick(event)" />
+        </div>
+        <div id="jsonObject"></div>
+        <div class="box-result">
+            <button onclick="copycontent()">Copy</button>
+        </div>
+    </div>
+    <script src="./node_modules/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="./node_modules/xlsx/dist/xlsx.core.min.js"></script>
+    <script>
+        // 读取文件数据
+        function fileClick(evt) {
+            // 假设用户只上传一个表格
+            var selectedFile = evt.target.files[0];
+            // FileReader 读取文件数据
+            var reader = new FileReader();
+            // 读取成功处理
+            reader.onload = function(event) {
+                var data = event.target.result;
+                var workbook = XLSX.read(data, {
+                    type: 'binary'
+                });
+                workbook.SheetNames.forEach(function(sheetName) {
+                    var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+                    if (XL_row_object.length > 0) {
+                        document.getElementById("jsonObject").innerHTML = formatJson(JSON.stringify(XL_row_object));
+                    }
+                })
+            };
+            // 读取失败处理
+            reader.onerror = function(event) {
+                console.error("File could not be read! Code " + event.target.error.code);
+            };
+            // 读取上传文件为二进制
+            reader.readAsBinaryString(selectedFile);
+        };
+
+        // JSON格式化
+        function formatJson(v, options) {
+            v = v.replace(/&quot;/g, '"');
+            v = v.replace(/ /g, '');
+            var reg = /(\[|{|,)/g;
+            v = v.replace(reg, function(a, b) {
+                return a + "<br/>";
+            });
+            reg = /(}|\])/g;
+            v = v.replace(reg, function(a, b) {
+                return "<br/>" + a;
+            });
+            reg = /(:\[)/g;
+            v = v.replace(reg, function(a, b) {
+                return a[0] + "<br/>" + a[1];
+            });
+            var arr = v.toString().split("<br/>")
+            var arr1 = new Array("[", "]");
+            var arr2 = new Array("{", "}");
+            var pre = "";
+            v = "";
+            var chr = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+            var lth = chr.length;
+            var prev = "";
+            $.each(arr, function(index, item) {
+                if (item == "[" || item == "{") {
+                    if (pre != "},") {
+                        prev += chr;
+                    }
+                    v += prev + item + "<br />";
+                } else if (item == "]" || item == "}" || item == "},") {
+                    prev = prev.substr(0, prev.length - lth);
+                    v += prev + item + "<br />";
+                } else {
+                    if (pre == "{") {
+                        prev += chr;
+                    }
+                    v += prev + item + "<br />";
+                }
+                pre = item;
+            });
+            var reg = /(&nbsp;".\w+")/g;
+            // 输出
+            v = v.replace(reg, function(a, b) {
+                return "<span style=\"color:#e36437;\">" + a + "</span>";
+            });
+            reg = /((:\s*\"([^\"]*)\"(,?))|(:\s*(\d+(\.\d)*|null)+[,]?))/g;
+            v = v.replace(reg, function(a, b) {
+                return "<span style=\"color:#62c699;\">" + a + "</span>";
+            });
+            return v;
+        };
+
+        function copycontent() {
+            // 获取内容 （去除字符串中所有的空格）
+            var data = $('#jsonObject').text().replace(/\s+/g, "");
+            // 复制
+            copyToClip(data)
+        }
+
+        function copyToClip(content) {
+            // 创建input节点
+            var aux = document.createElement("input");
+            // 设置input值 = 需要复制的内容
+            aux.setAttribute("value", content);
+            // 在body中插入input节点
+            document.body.appendChild(aux);
+            // 选中
+            aux.select();
+            // 因为execComand()复制的方法只能在input中使用，因此对于其他标签如div 、 span就是利用插入一个input节点来接收span、div里的内容来达到复制的效果
+            document.execCommand("copy");
+            // 删除input节点
+            document.body.removeChild(aux);
+            alert('复制成功');
+        }
+    </script>
+</body>
+
+</html>
